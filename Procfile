@@ -1,1 +1,1 @@
-web: gunicorn dhan_option_chain_api:app
+web: gunicorn nse_free_option_chain_api:app
