@@ -41,7 +41,7 @@ import datetime
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from dhanhq import dhanhq
+from dhanhq import DhanContext, dhanhq
 
 # ---------------------------------------------------------------------------
 # CONFIG — reads from environment variables (set these on your hosting
@@ -66,7 +66,8 @@ UNDERLYING = {
 app = Flask(__name__)
 CORS(app)
 
-dhan = dhanhq(CLIENT_ID, ACCESS_TOKEN)
+dhan_context = DhanContext(CLIENT_ID, ACCESS_TOKEN)
+dhan = dhanhq(dhan_context)
 
 
 def get_expiry_list(symbol):
