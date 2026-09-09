@@ -91,6 +91,8 @@ def build_chain(symbol="NIFTY", num_strikes=10):
         under_exchange_segment=info["segment"],
         expiry=nearest_expiry,
     )
+    if chain_resp.get("status") != "success" or not isinstance(chain_resp.get("data"), dict):
+        raise RuntimeError(f"Dhan API error: {chain_resp}")
     data = chain_resp.get("data", {})
     spot = data.get("last_price")
     oc = data.get("oc", {})  # dict keyed by strike price string
@@ -179,6 +181,12 @@ def index_quotes():
         quote_resp = dhan.quote_data(securities=by_segment)
     except Exception as exc:  # noqa: BLE001
         return jsonify({"error": str(exc)}), 500
+
+    # Dhan returns {"status": "failure", "data": "...", "remarks": "..."} on
+    # errors (bad token, wrong security id, Data API plan not active, etc).
+    # Surface that message instead of crashing on .items().
+    if quote_resp.get("status") != "success" or not isinstance(quote_resp.get("data"), dict):
+        return jsonify({"error": "Dhan API error", "details": quote_resp}), 502
 
     quote_map = {}  # security_id (str) -> quote row
     for segment, rows in quote_resp.get("data", {}).items():
