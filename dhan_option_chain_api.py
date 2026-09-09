@@ -223,6 +223,17 @@ def index_quotes():
     )
 
 
+@app.route("/api/debug")
+def debug():
+    """Quick sanity check — confirms whether authentication itself works,
+    separate from the quote/option-chain request format."""
+    try:
+        funds = dhan.get_fund_limits()
+        return jsonify({"fund_limits_response": funds})
+    except Exception as exc:  # noqa: BLE001
+        return jsonify({"error": str(exc)}), 500
+
+
 @app.route("/api/health")
 def health():
     return jsonify({"status": "ok", "time": datetime.datetime.now().isoformat()})
