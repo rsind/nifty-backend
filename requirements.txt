@@ -1,0 +1,4 @@
+flask
+dhanhq
+flask-cors
+gunicorn
