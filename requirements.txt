@@ -1,4 +1,4 @@
 flask
-dhanhq
+requests
 flask-cors
 gunicorn
