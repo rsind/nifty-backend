@@ -217,12 +217,14 @@ def index_quotes():
 @app.route("/api/debug-raw-index")
 def debug_raw_index():
     """Shows the raw NSE response for one index so we can see the exact
-    field names their API actually uses (helps fix high/low mapping)."""
+    field names/index name their API actually uses."""
+    want = request.args.get("index", "NIFTY 50")
     try:
         data = nse_get("/api/allIndices")
         rows = data.get("data", [])
-        nifty_row = next((r for r in rows if r.get("index") == "NIFTY 50"), None)
-        return jsonify({"nifty_row_raw": nifty_row})
+        match = next((r for r in rows if r.get("index") == want), None)
+        all_names = [r.get("index") for r in rows]
+        return jsonify({"match": match, "all_available_index_names": all_names})
     except Exception as exc:  # noqa: BLE001
         return jsonify({"error": str(exc)}), 500
 
