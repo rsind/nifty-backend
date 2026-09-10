@@ -201,8 +201,8 @@ def index_quotes():
                 "ltp": row.get("last"),
                 "change": row.get("variation"),
                 "change_pct": row.get("percentChange"),
-                "high": row.get("dayHigh"),
-                "low": row.get("dayLow"),
+                "high": row.get("high"),
+                "low": row.get("low"),
             }
         )
 
